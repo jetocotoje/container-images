@@ -46,8 +46,14 @@ Runtime user and permissions expectations:
 
 - Default user inside container: `ombi:ombi / 10001:10001`.
 - The mounted `/config` path must already be writable by this user for fully rootless operation.
-- Most of `/app/ombi` stays root-owned and read-only at runtime; only the generated frontend file Ombi rewrites is writable by the runtime user.
+- Most of `/app/ombi` stays root-owned and read-only at runtime.
+- The generated frontend file Ombi rewrites is redirected to `/config/runtime/index.html`, so the image can run with a read-only root filesystem.
 - .NET diagnostics are disabled by default via `DOTNET_EnableDiagnostics=0` to reduce attach/debug surface inside the container.
+
+### Read-only root filesystem
+
+- Supported when `/config` is writable.
+- Provide writable temporary storage such as `--tmpfs /tmp` when using `--read-only`.
 
 ### Startup arguments
 

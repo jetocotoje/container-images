@@ -40,7 +40,11 @@ RUN groupadd --gid "$GID" ombi \
 
 COPY --from=download /opt/ombi/ /app/ombi/
 
-RUN chown ombi:ombi /app/ombi/ClientApp/dist/index.html
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN mv /app/ombi/ClientApp/dist/index.html /app/ombi/index.html.template \
+    && ln -s /config/runtime/index.html /app/ombi/ClientApp/dist/index.html \
+    && chmod 755 /usr/local/bin/docker-entrypoint.sh
 
 WORKDIR /app/ombi
 
@@ -56,5 +60,5 @@ USER ombi
 
 VOLUME ["/config"]
 
-ENTRYPOINT ["/app/ombi/Ombi"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["--storage", "/config", "--host", "http://*:5000"]
