@@ -1,0 +1,7 @@
+{
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["LIDARR_VERSION"],
+  "tagTemplates": [
+    "{LIDARR_VERSION}"
+  ]
+}
