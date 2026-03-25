@@ -47,6 +47,7 @@ Runtime user and permissions expectations:
 - Default user inside container: `10001:10001`.
 - The mounted `/config` path must already be writable by this user for fully rootless operation.
 - `HOME=/config`, `TMPDIR=/config/tmp`, and `.NET` diagnostics are disabled via `DOTNET_EnableDiagnostics=0`.
+- Debian's `nodejs` runtime is included so Lidarr can perform local token generation when needed.
 - The entrypoint creates `/config/tmp` on startup so the image works cleanly with `readOnlyRootFilesystem: true`.
 
 ### Startup arguments

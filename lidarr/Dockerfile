@@ -52,6 +52,7 @@ RUN apt-get update \
         libsqlite3-0 \
         libssl3t64 \
         libstdc++6 \
+        nodejs \
         tzdata \
         zlib1g \
     && rm -rf /var/lib/apt/lists/* \
