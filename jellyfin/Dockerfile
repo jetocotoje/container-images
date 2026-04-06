@@ -1,5 +1,5 @@
 # renovate: datasource=github-releases depName=jellyfin/jellyfin
-ARG JELLYFIN_VERSION=10.11.7@sha256:2b93aa3830dcd0aab7185c635e20edef1f8dc5d2e999768baf1724e88c078004
+ARG JELLYFIN_VERSION=10.11.8@sha256:93227545077893cc9516f28b3adb733b67bc4691f41b6167428a2a0e3220b81c
 ARG TARGETARCH
 
 FROM --platform=linux/${TARGETARCH} ghcr.io/jellyfin/jellyfin:${JELLYFIN_VERSION}
