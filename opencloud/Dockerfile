@@ -32,7 +32,7 @@ ARG PROGRESS_BARS_VERSION=1.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^json-viewer-v(?<version>\d+\.\d+\.\d+)$"
 ARG JSON_VIEWER_VERSION=1.0.2
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^external-sites-v(?<version>\d+\.\d+\.\d+)$"
-ARG EXTERNAL_SITES_VERSION=1.3.0
+ARG EXTERNAL_SITES_VERSION=2.0.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^draw-io-v(?<version>\d+\.\d+\.\d+)$"
 ARG DRAWIO_VERSION=1.0.1
 
