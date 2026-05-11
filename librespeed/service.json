@@ -1,0 +1,7 @@
+{
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["LIBRESPEED_VERSION"],
+  "tagTemplates": [
+    "{LIBRESPEED_VERSION}"
+  ]
+}
