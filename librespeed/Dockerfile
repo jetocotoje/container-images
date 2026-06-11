@@ -20,7 +20,7 @@ RUN curl --fail --location --show-error \
     && tar --extract --gzip --strip-components=1 --file /tmp/librespeed.tar.gz \
     && rm /tmp/librespeed.tar.gz
 
-FROM docker.io/library/php:8.5-apache-bookworm@sha256:d992958f00ee1af14d47870ae8e0328a9f721b2a577236d09b640ac3e694993c
+FROM docker.io/library/php:8.5-apache-bookworm@sha256:4e495f9a51382a24d0d7db56647c788c866d5a87115029efb98cb27c8964d27c
 
 ARG UID=10001
 ARG GID=10001
