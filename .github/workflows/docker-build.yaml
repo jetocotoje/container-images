@@ -21,7 +21,7 @@ jobs:
       has-work: ${{ steps.build-matrix.outputs.has_work }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Validate upstream version pins for ${{ matrix.name }}
         run: python3 .github/scripts/validate_upstream_versions.py --service-dir "${{ matrix.dir }}" --dockerfile "${{ matrix.dockerfile }}"
