@@ -49,6 +49,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Validate upstream version pins for ${{ matrix.name }}
+        run: python3 .github/scripts/validate_upstream_versions.py --service-dir "${{ matrix.dir }}" --dockerfile "${{ matrix.dockerfile }}"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
 

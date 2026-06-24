@@ -5,7 +5,7 @@ ARG DEBIAN_BASE=docker.io/library/debian:trixie-slim@sha256:28de0877c2189802884c
 FROM --platform=$BUILDPLATFORM ${DEBIAN_BASE} AS fetch
 
 # renovate: datasource=custom.servarr-nightly depName=lidarr versioning=loose
-ARG LIDARR_VERSION=3.1.2.4928
+ARG LIDARR_VERSION=3.1.3.4970
 ARG LIDARR_BRANCH=nightly
 ARG TARGETARCH
 
@@ -24,8 +24,9 @@ RUN case "${TARGETARCH}" in \
         *) echo "Unsupported TARGETARCH: ${TARGETARCH}" >&2; exit 1 ;; \
     esac \
     && release_json="$(curl --fail --show-error --silent --location --retry 5 --retry-delay 2 --retry-all-errors "https://lidarr.servarr.com/v1/update/${LIDARR_BRANCH}/changes?os=linux&runtime=netcore&arch=${lidarr_arch}")" \
-    && package_url="$(printf '%s' "${release_json}" | jq -er --arg version "${LIDARR_VERSION}" 'first(.[] | select(.version == $version)) | .url')" \
-    && package_hash="$(printf '%s' "${release_json}" | jq -er --arg version "${LIDARR_VERSION}" 'first(.[] | select(.version == $version)) | .hash')" \
+    && package_metadata="$(printf '%s' "${release_json}" | jq -er --arg version "${LIDARR_VERSION}" 'map(select(.version == $version)) | first // error("Lidarr version not found in update feed: " + $version)')" \
+    && package_url="$(printf '%s' "${package_metadata}" | jq -er '.url')" \
+    && package_hash="$(printf '%s' "${package_metadata}" | jq -er '.hash')" \
     && mkdir -p /out/bin \
     && curl --fail --show-error --silent --location --retry 5 --retry-delay 2 --retry-all-errors "${package_url}" -o /tmp/lidarr.tar.gz \
     && printf '%s  %s\n' "${package_hash}" "/tmp/lidarr.tar.gz" | sha256sum -c - \

@@ -13,6 +13,11 @@
       "ignoreTests": true
     },
     {
+      "matchFileNames": ["lidarr/Dockerfile"],
+      "groupName": "lidarr image inputs",
+      "groupSlug": "lidarr-image-inputs"
+    },
+    {
       "matchCategories": ["!docker"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
@@ -23,10 +28,10 @@
 
   "customDatasources": {
     "servarr-nightly": {
-      "defaultRegistryUrlTemplate": "https://{{packageName}}.servarr.com/v1/update/nightly/changes?os=linux&runtime=netcore",
+      "defaultRegistryUrlTemplate": "https://{{packageName}}.servarr.com/v1/update/nightly/changes?os=linux&runtime=netcore&arch=x64",
       "format": "json",
       "transformTemplates": [
-        "{\"releases\":[{\"version\": $[0].version}]}"
+        "{\"releases\": $.{\"version\": version, \"releaseTimestamp\": releaseDate}}"
       ]
     }
   },
@@ -40,10 +45,10 @@
         "(^|/)Dockerfile\\.[^/]*$"
       ],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=\"?(?<versioning>[^\"]+)\"?)?\\s*(?:\\s+extractVersion=\"?(?<extractVersion>[^\"]+)\"?)?\\s*\\nARG\\s+(?<argName>[A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*\"?((?<currentValue>[^\"\\s]+))\"?"
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=\"?(?<versioning>[^\"\\s]+)\"?)?\\s*(?:\\s+extractVersion=\"?(?<extractVersion>[^\"\\s]+)\"?)?\\s*\\nARG\\s+(?<argName>[A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*\"?((?<currentValue>[^\"\\s]+))\"?"
       ],
       "depNameTemplate": "{{{ depName }}}@{{{ argName }}}",
-      "lookupNameTemplate": "{{{ depName }}}",
+      "packageNameTemplate": "{{{ depName }}}",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
       "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{/if}}"
     }
