@@ -28,7 +28,7 @@ ARG ARCADE_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^maps-v(?<version>\d+\.\d+\.\d+)$"
 ARG MAPS_VERSION=3.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^progress-bars-v(?<version>\d+\.\d+\.\d+)$"
-ARG PROGRESS_BARS_VERSION=2.0.0
+ARG PROGRESS_BARS_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^json-viewer-v(?<version>\d+\.\d+\.\d+)$"
 ARG JSON_VIEWER_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^external-sites-v(?<version>\d+\.\d+\.\d+)$"
