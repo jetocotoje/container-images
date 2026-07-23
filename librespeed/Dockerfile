@@ -1,5 +1,5 @@
 # renovate: datasource=github-tags depName=librespeed/speedtest
-ARG LIBRESPEED_VERSION=v6.1.0
+ARG LIBRESPEED_VERSION=v6.2.0
 ARG LIBRESPEED_SHA256=2032765ade84a36d0c0a896617002fd0afa90aaccb56255af05dd4b97f7555fb
 
 FROM docker.io/library/debian:trixie-slim@sha256:020c0d20b9880058cbe785a9db107156c3c75c2ac944a6aa7ab59f2add76a7bd AS source
