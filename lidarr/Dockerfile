@@ -5,7 +5,7 @@ ARG DEBIAN_BASE=docker.io/library/debian:trixie-slim@sha256:3a39a0592364683e6bab
 FROM --platform=$BUILDPLATFORM ${DEBIAN_BASE} AS fetch
 
 # renovate: datasource=custom.servarr-nightly depName=lidarr versioning=loose
-ARG LIDARR_VERSION=3.1.3.5020
+ARG LIDARR_VERSION=3.1.4.5029
 ARG LIDARR_BRANCH=nightly
 ARG TARGETARCH
 
