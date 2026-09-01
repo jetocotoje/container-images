@@ -9,9 +9,9 @@ LibreSpeed built from upstream source on `php:8.4-apache`, packaged for rootless
 Tags (actual set depends on CI configuration):
 
 - `latest` - latest successful build from the `main` branch
-- `<LIBRESPEED_VERSION>` - based on the upstream LibreSpeed git tag
+- `v<LIBRESPEED_VERSION>` - based on the upstream LibreSpeed release
 
-The upstream source tarball is verified with `LIBRESPEED_SHA256` during build.
+The upstream source is copied from LibreSpeed's SHA256-pinned multi-platform image.
 
 ---
 

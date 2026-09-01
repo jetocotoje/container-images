@@ -1,26 +1,8 @@
-# renovate: datasource=github-tags depName=librespeed/speedtest
-ARG LIBRESPEED_VERSION=v6.2.1
-ARG LIBRESPEED_SHA256=2032765ade84a36d0c0a896617002fd0afa90aaccb56255af05dd4b97f7555fb
+ARG LIBRESPEED_VERSION=6.2.1
 
-FROM docker.io/library/debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132 AS source
+FROM ghcr.io/librespeed/speedtest:${LIBRESPEED_VERSION}@sha256:705744f487048f209b4e389312ea82d4d5c36a76db3e5123b97d4b1649b724b5 AS source
 
-ARG LIBRESPEED_VERSION
-ARG LIBRESPEED_SHA256
-
-RUN apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates curl tar \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /src
-
-RUN curl --fail --location --show-error \
-      "https://github.com/librespeed/speedtest/archive/refs/tags/${LIBRESPEED_VERSION}.tar.gz" \
-      --output /tmp/librespeed.tar.gz \
-    && echo "${LIBRESPEED_SHA256}  /tmp/librespeed.tar.gz" | sha256sum --check \
-    && tar --extract --gzip --strip-components=1 --file /tmp/librespeed.tar.gz \
-    && rm /tmp/librespeed.tar.gz
-
-FROM docker.io/library/php:8.5-apache-bookworm@sha256:824adc2ce556dd5e05e816b1597cad90948e44b0b36ac2642f7449b801fb8dbd
+FROM docker.io/library/php:8.5-apache-bookworm@sha256:68e1de9a82af09f1b0ae70611bd64a8702069ac1e036bdc5a12eb48e1a5cab2b
 
 ARG UID=10001
 ARG GID=10001
@@ -37,7 +19,7 @@ RUN apt-get update \
     && mkdir -p /opt/librespeed /database \
     && chown librespeed:librespeed /database
 
-COPY --from=source /src/ /opt/librespeed/
+COPY --from=source /speedtest/ /opt/librespeed/
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
