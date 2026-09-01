@@ -2,7 +2,7 @@ ARG LIBRESPEED_VERSION=6.2.1
 
 FROM ghcr.io/librespeed/speedtest:${LIBRESPEED_VERSION}@sha256:705744f487048f209b4e389312ea82d4d5c36a76db3e5123b97d4b1649b724b5 AS source
 
-FROM docker.io/library/php:8.5-apache-bookworm@sha256:68e1de9a82af09f1b0ae70611bd64a8702069ac1e036bdc5a12eb48e1a5cab2b
+FROM docker.io/library/php:8.5-apache-bookworm@sha256:824adc2ce556dd5e05e816b1597cad90948e44b0b36ac2642f7449b801fb8dbd
 
 ARG UID=10001
 ARG GID=10001
