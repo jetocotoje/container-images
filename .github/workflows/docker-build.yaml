@@ -76,11 +76,17 @@ jobs:
 
       - name: Compute image refs for ${{ matrix.name }}
         id: refs
+        env:
+          PR_FORK: ${{ github.event.pull_request.head.repo.fork }}
         run: |
           image="$(printf '%s/%s/%s' "${REGISTRY}" "${IMAGE_PREFIX}" "${{ matrix.name }}" | tr '[:upper:]' '[:lower:]')"
           cache_ref="$(printf '%s/%s/buildcache' "${REGISTRY}" "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]'):${{ matrix.name }}-${{ matrix.slug }}"
           echo "image=${image}" >> "$GITHUB_OUTPUT"
           echo "cache_ref=${cache_ref}" >> "$GITHUB_OUTPUT"
+          # Fork PRs run with a read-only GITHUB_TOKEN and cannot push the cache.
+          if [ "${PR_FORK}" != "true" ]; then
+            echo "cache_to=type=registry,mode=max,ref=${cache_ref}" >> "$GITHUB_OUTPUT"
+          fi
           if [ "${PUSH}" = "true" ]; then
             echo "outputs=type=image,name=${image},push-by-digest=true,name-canonical=true,push=true" >> "$GITHUB_OUTPUT"
           fi
@@ -94,7 +100,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           outputs: ${{ steps.refs.outputs.outputs }}
           cache-from: type=registry,ref=${{ steps.refs.outputs.cache_ref }}
-          cache-to: type=registry,mode=max,ref=${{ steps.refs.outputs.cache_ref }}
+          cache-to: ${{ steps.refs.outputs.cache_to }}
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Export digest

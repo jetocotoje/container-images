@@ -19,6 +19,9 @@ from typing import Dict, List
 
 
 ARG_LINE = re.compile(r"^\s*ARG\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.+?)\s*(?:#.*)?$")
+# Version args may pin the base image digest (e.g. 12.0@sha256:...); tags use
+# the bare version.
+DIGEST_SUFFIX = re.compile(r"@sha256:[0-9a-f]{64}$")
 
 
 def parse_args(dockerfile: pathlib.Path, names: List[str]) -> Dict[str, str]:
@@ -39,7 +42,7 @@ def parse_args(dockerfile: pathlib.Path, names: List[str]) -> Dict[str, str]:
             arg_name, raw_value = match.groups()
             if arg_name not in wanted:
                 continue
-            cleaned = raw_value.strip().strip("'").strip('"')
+            cleaned = DIGEST_SUFFIX.sub("", raw_value.strip().strip("'").strip('"'))
             if cleaned:
                 values[arg_name] = cleaned
                 print(f"Found {arg_name}={cleaned}")
