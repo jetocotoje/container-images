@@ -40,9 +40,9 @@
     {
       "customType": "regex",
       "description": "Update *_VERSION args in Dockerfiles based on # renovate: comments on previous line (quoted or unquoted)",
-      "fileMatch": [
-        "(^|/|\\.)Dockerfile$",
-        "(^|/)Dockerfile\\.[^/]*$"
+      "managerFilePatterns": [
+        "/(^|/|\\.)Dockerfile$/",
+        "/(^|/)Dockerfile\\.[^/]*$/"
       ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=\"?(?<versioning>[^\"\\s]+)\"?)?\\s*(?:\\s+extractVersion=\"?(?<extractVersion>[^\"\\s]+)\"?)?\\s*\\nARG\\s+(?<argName>[A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*\"?((?<currentValue>[^\"\\s]+))\"?"
