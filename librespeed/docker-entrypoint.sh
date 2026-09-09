@@ -136,7 +136,7 @@ if [[ "$MODE" == "frontend" || "$MODE" == "dual" || "$MODE" == "standalone" ]]; 
     echo "using SERVER_LIST_URL for frontend server list"
     server_list_url_escaped=$(sed_escape "$SERVER_LIST_URL")
     sed -i "s/var SPEEDTEST_SERVERS = \"server-list.json\";/var SPEEDTEST_SERVERS = \"$server_list_url_escaped\";/" "$WEBROOT/index-modern.html"
-    sed -i "s/var SPEEDTEST_SERVERS = \\[/var SPEEDTEST_SERVERS = \"$server_list_url_escaped\";\\n\\t\\t\\/\\*/" "$WEBROOT/index-classic.html"
+    sed -i "s/var SPEEDTEST_SERVERS = \\[/var SPEEDTEST_SERVERS = \"$server_list_url_escaped\"; [/" "$WEBROOT/index-classic.html"
   fi
 
   if [ -n "$TITLE" ]; then
