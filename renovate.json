@@ -21,7 +21,6 @@
       "description": "Numeric image tags: allow 2- and 3-segment versions (docker versioning blocks cross-schema updates, e.g. jellyfin 10.11.11 -> 12.0)",
       "matchDepNames": [
         "ghcr.io/jellyfin/jellyfin",
-        "ghcr.io/librespeed/speedtest",
         "ghcr.io/homarr-labs/homarr",
         "opencloudeu/opencloud-rolling",
         "docker.io/library/php"
@@ -62,6 +61,19 @@
       "packageNameTemplate": "{{{ depName }}}",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
       "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "description": "librespeed source pin: release tag and commit sha, updated together from git tags",
+      "fileMatch": ["librespeed/Dockerfile$"],
+      "matchStrings": [
+        "ARG LIBRESPEED_VERSION=(?<currentValue>v\\S+)\\nARG LIBRESPEED_COMMIT=(?<currentDigest>[0-9a-f]{40})"
+      ],
+      "datasourceTemplate": "git-tags",
+      "depNameTemplate": "librespeed/speedtest source",
+      "packageNameTemplate": "https://github.com/librespeed/speedtest.git",
+      "versioningTemplate": "semver",
+      "autoReplaceStringTemplate": "ARG LIBRESPEED_VERSION={{{newValue}}}\nARG LIBRESPEED_COMMIT={{{newDigest}}}"
     }
   ]
 }

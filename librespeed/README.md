@@ -1,6 +1,6 @@
 # LibreSpeed
 
-LibreSpeed built from upstream source on `php:8.4-apache`, packaged for rootless Kubernetes deployments.
+LibreSpeed built from the upstream source release on `php:8.5-apache`, packaged for rootless Kubernetes deployments.
 
 ---
 
@@ -11,7 +11,7 @@ Tags (actual set depends on CI configuration):
 - `latest` - latest successful build from the `main` branch
 - `v<LIBRESPEED_VERSION>` - based on the upstream LibreSpeed release
 
-The upstream source is copied from LibreSpeed's SHA256-pinned multi-platform image.
+The application source is the LibreSpeed release tarball for `v<LIBRESPEED_VERSION>`, fetched by the git commit pinned in `LIBRESPEED_COMMIT`. Renovate updates both values together from the upstream release tags, so new releases flow in automatically. The IP geolocation database (`backend/country_asn.mmdb`) is the copy committed with that release tag, not a build-time download.
 
 ---
 
