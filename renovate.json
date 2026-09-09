@@ -18,6 +18,17 @@
       "groupSlug": "lidarr-image-inputs"
     },
     {
+      "description": "Numeric image tags: allow 2- and 3-segment versions (docker versioning blocks cross-schema updates, e.g. jellyfin 10.11.11 -> 12.0)",
+      "matchDepNames": [
+        "ghcr.io/jellyfin/jellyfin",
+        "ghcr.io/librespeed/speedtest",
+        "ghcr.io/homarr-labs/homarr",
+        "opencloudeu/opencloud-rolling",
+        "docker.io/library/php"
+      ],
+      "versioning": "regex:^[vV]?(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<compatibility>.*))?$"
+    },
+    {
       "matchCategories": ["!docker"],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,

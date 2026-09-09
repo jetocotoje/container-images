@@ -1,4 +1,3 @@
-# renovate: datasource=github-releases depName=opencloud-eu/opencloud
 ARG OPENCLOUD_VERSION=7.5.0@sha256:6db1cfb06d430a663f16e9f33dcd4596d82a4875be0b4df233c26ce5f667ea74
 ARG TARGETARCH
 
