@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 """
-Discover buildable services and emit the GitHub Actions matrix payload.
+Discover buildable services and emit GitHub Actions matrix payloads.
 
 The previous inline bash script grew unwieldy and was error-prone when the
 repository state changed (e.g., missing base commit or filenames containing
 spaces).  This Python version keeps the same behaviour but in a clearer form,
 adds better logging, and handles edge-cases like zero SHAs.
+
+Two matrices are emitted: ``matrix`` expands each selected service into one
+entry per target platform (each pinned to a runner that executes that platform
+natively), and ``merge_matrix`` has one entry per service for the job that
+stitches the per-platform digests into a multi-platform manifest.
 """
 
 from __future__ import annotations
@@ -20,6 +25,12 @@ from typing import Dict, Iterable, List, Sequence, Set
 ZERO_SHA = "0" * 40
 # README-only updates should not trigger builds.
 IGNORED_TOP_LEVEL_ENTRIES = {"README", "README.md"}
+# Platforms need a runner that executes them natively; anything unlisted
+# fails fast on the default runner instead of silently falling back to QEMU.
+PLATFORM_RUNNERS = {
+    "linux/arm64": "ubuntu-24.04-arm",
+}
+DEFAULT_RUNNER = "ubuntu-latest"
 
 
 def log(msg: str) -> None:
@@ -109,6 +120,31 @@ def load_services() -> List[Dict[str, str]]:
 
     return services
 
+def platform_runner(platform: str) -> str:
+    return PLATFORM_RUNNERS.get(platform, DEFAULT_RUNNER)
+
+
+def expand_matrix_entries(
+    services: Sequence[Dict[str, str]],
+) -> List[Dict[str, str]]:
+    entries: List[Dict[str, str]] = []
+    for svc in services:
+        for platform in (p.strip() for p in svc["platforms"].split(",")):
+            if not platform:
+                continue
+            entries.append(
+                {
+                    "name": svc["name"],
+                    "dir": svc["dir"],
+                    "context": svc["context"],
+                    "dockerfile": svc["dockerfile"],
+                    "platform": platform,
+                    "slug": platform.replace("/", "-"),
+                    "runner": platform_runner(platform),
+                }
+            )
+    return entries
+
 
 def select_services(
     services: Sequence[Dict[str, str]],
@@ -141,10 +177,15 @@ def select_services(
     return list(services)
 
 
-def write_output(matrix: Dict[str, List[Dict[str, str]]], has_work: bool) -> None:
+def write_output(
+    matrix: Dict[str, List[Dict[str, str]]],
+    merge_matrix: Dict[str, List[Dict[str, str]]],
+    has_work: bool,
+) -> None:
     output_path = os.environ["GITHUB_OUTPUT"]
     with open(output_path, "a", encoding="utf-8") as fh:
         fh.write(f"matrix={json.dumps(matrix)}\n")
+        fh.write(f"merge_matrix={json.dumps(merge_matrix)}\n")
         fh.write(f"has_work={'true' if has_work else 'false'}\n")
 
 
@@ -167,7 +208,7 @@ def main() -> int:
 
     if not services:
         log("No services detected; emitting empty matrix.")
-        write_output({"include": []}, False)
+        write_output({"include": []}, {"include": []}, False)
         return 0
 
     log("### Determining changed directories")
@@ -176,9 +217,11 @@ def main() -> int:
     selected = select_services(services, changed_dirs)
     has_work = bool(selected)
 
-    matrix = {"include": selected}
-    dump("Final matrix payload", matrix)
-    write_output(matrix, has_work)
+    build_matrix = {"include": expand_matrix_entries(selected)}
+    merge_matrix = {"include": selected}
+    dump("Final build matrix payload", build_matrix)
+    dump("Final merge matrix payload", merge_matrix)
+    write_output(build_matrix, merge_matrix, has_work)
     return 0
 
 
