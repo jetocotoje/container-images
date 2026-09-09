@@ -1,6 +1,6 @@
 {
   "platforms": ["linux/amd64", "linux/arm64"],
-  "versionArgs": ["JELLYFIN_VERSION", "COMPUTE_RUNTIME_VERSION"],
+  "versionArgs": ["JELLYFIN_VERSION"],
   "tagTemplates": [
     "{JELLYFIN_VERSION}"
   ]
