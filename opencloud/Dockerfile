@@ -48,12 +48,9 @@ RUN /var/lib/scripts/load-extensions.sh "$EXTENSIONS_DIR"
 VOLUME [ "/var/lib/opencloud", "/etc/opencloud-configs" ]
 ENTRYPOINT [ "/bin/sh" ]
 CMD [ "/var/lib/scripts/entrypoint.sh" ]
+# 9200 serves TLS with a self-signed cert (opencloud init --insecure=false),
+# so probe via curl; exec form keeps the command a single literal.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD bash -c ' \
-    exec 3<>/dev/tcp/127.0.0.1/9200 || exit 1 \
-    printf "GET /health HTTP/1.0\r\nHost: localhost\r\n\r\n" >&3 \
-    IFS= read -r status <&3 || exit 1 \
-    echo "$status" | grep -q " 200 " || exit 1 \
-  '
+  CMD ["/usr/bin/curl", "--silent", "--fail", "--insecure", "--output", "/dev/null", "https://127.0.0.1:9200/health"]
 
 VOLUME ["/config", "/cache"]

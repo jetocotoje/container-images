@@ -21,13 +21,10 @@ WORKDIR /jellyfin
 ENV JELLYFIN_DATA_DIR=/config \
     JELLYFIN_CACHE_DIR=/cache
 
+# Exec form, one line: Dockerfile line continuations collapse a shell-form
+# command into a single || chain that never sends the request.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-  CMD bash -c ' \
-    exec 3<>/dev/tcp/127.0.0.1/8096 || exit 1 \
-    printf "GET /health HTTP/1.0\r\nHost: localhost\r\n\r\n" >&3 \
-    IFS= read -r status <&3 || exit 1 \
-    echo "$status" | grep -q " 200 " || exit 1 \
-  '
+  CMD ["/bin/bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8096 || exit 1; printf 'GET /health HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3; IFS= read -r status <&3 || exit 1; [[ \"$status\" == *' 200 '* ]] || exit 1"]
 
 USER jellyfin
 
