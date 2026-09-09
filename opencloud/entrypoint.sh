@@ -12,11 +12,15 @@ fi
 
 /bin/ln -sf /var/lib/opencloud/opencloud.yaml /etc/opencloud/opencloud.yaml;
 
-if [ -d /etc/opencloud-configs ] && [ -z "$(find /etc/opencloud-configs/ -type d -empty)" ]; then
-  echo "Copying opencloud config files";
-  /bin/cp -L /etc/opencloud-configs/*.yaml /etc/opencloud/;
+if [ -r /etc/opencloud-configs ]; then
+  if /bin/ls /etc/opencloud-configs/*.yaml >/dev/null 2>&1; then
+    echo "Copying opencloud config files";
+    /bin/cp -L /etc/opencloud-configs/*.yaml /etc/opencloud/;
+  else
+    echo "No custom configuration files in /etc/opencloud-configs. Skipping config copy."
+  fi
 else
-  echo "Config directory /etc/opencloud-configs doesn't exist. Skipping config copy."
+  echo "Warning: /etc/opencloud-configs is not readable. Skipping config copy." >&2
 fi
 
 echo "Starting Opencloud"

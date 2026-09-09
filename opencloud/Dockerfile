@@ -52,5 +52,3 @@ CMD [ "/var/lib/scripts/entrypoint.sh" ]
 # so probe via curl; exec form keeps the command a single literal.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
   CMD ["/usr/bin/curl", "--silent", "--fail", "--insecure", "--output", "/dev/null", "https://127.0.0.1:9200/health"]
-
-VOLUME ["/config", "/cache"]
