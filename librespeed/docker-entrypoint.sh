@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+# MODE/WEBPORT guard against empty -e overrides; PASSWORD has no image default.
+# Remaining defaults live only in the Dockerfile ENV block.
 : "${MODE:=standalone}"
 : "${WEBPORT:=8080}"
-: "${TITLE:=LibreSpeed}"
-: "${TAGLINE:=No Flash, No Java, No Websockets, No Bullsh*t}"
-: "${TELEMETRY:=false}"
 : "${PASSWORD:=}"
-: "${ENABLE_ID_OBFUSCATION:=false}"
-: "${REDACT_IP_ADDRESSES:=false}"
-: "${USE_NEW_DESIGN:=false}"
 
 SOURCE_DIR=${LIBRESPEED_SOURCE_DIR:-/opt/librespeed}
 RUNTIME_DIR=${LIBRESPEED_RUNTIME_DIR:-/tmp/librespeed}

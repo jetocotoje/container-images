@@ -1,6 +1,6 @@
 # LibreSpeed
 
-LibreSpeed built from upstream source on `php:8.4-apache`, packaged for rootless Kubernetes deployments.
+LibreSpeed built from upstream source on `php:8.5-apache` (Debian Trixie), packaged for rootless Kubernetes deployments.
 
 ---
 
