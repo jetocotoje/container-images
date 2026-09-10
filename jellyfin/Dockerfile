@@ -1,20 +1,20 @@
-ARG JELLYFIN_VERSION=12.0@sha256:74f4d87d9cf262c52d62be6be265c0355c6a7e21d0477ab6c654a49a4f8b1fd4
-ARG TARGETARCH
+# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-FROM --platform=linux/${TARGETARCH} ghcr.io/jellyfin/jellyfin:${JELLYFIN_VERSION}
+ARG JELLYFIN_VERSION=12.0@sha256:74f4d87d9cf262c52d62be6be265c0355c6a7e21d0477ab6c654a49a4f8b1fd4
+
+FROM ghcr.io/jellyfin/jellyfin:${JELLYFIN_VERSION}
 
 ARG UID=10001
 ARG GID=10001
 
 RUN apt-get update \
-    && apt-get purge --yes gnupg gnupg2 gnupg-agent gpg gpg-agent dirmngr curl \
+    && DEBIAN_FRONTEND=noninteractive apt-get purge --yes gnupg gnupg2 gnupg-agent gpg gpg-agent dirmngr curl \
     && apt-get autoremove --yes \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN groupadd -g $GID jellyfin && \
-    useradd --create-home --home-dir /config --shell /bin/bash -u $UID -g $GID -G video jellyfin && \
-    mkdir -p /cache && \
-    chown $UID:$GID /cache
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd -g $GID jellyfin \
+    && useradd --create-home --home-dir /config --shell /bin/bash -u $UID -g $GID -G video jellyfin \
+    && mkdir -p /cache \
+    && chown $UID:$GID /cache
 
 WORKDIR /jellyfin
 
