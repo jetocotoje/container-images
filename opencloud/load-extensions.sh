@@ -18,7 +18,7 @@ for var in $(/usr/bin/env | /bin/grep ^OC_EXTENSION_ | /usr/bin/cut -d= -f1); do
   extension_name="${var#OC_EXTENSION_}"
   # Use eval for POSIX-compliant indirect variable expansion
   extension_url=""
-  eval "eval extension_url='$'${var}"
+  eval "extension_url=\$$var"
   echo "Loading extension $extension_name from $extension_url"
   
   # Create a temporary directory for downloads
@@ -30,25 +30,20 @@ for var in $(/usr/bin/env | /bin/grep ^OC_EXTENSION_ | /usr/bin/cut -d= -f1); do
   
   zip_file="$temp_dir/extension.zip"
   
-  # Download and extract the extension
-  if /usr/bin/curl -L -s -S -o "$zip_file" "$extension_url"; then
-    # Verify the file was downloaded
-    if [ ! -f "$zip_file" ]; then
-      echo "ERROR: Download file not found for $extension_name"
-      /bin/rm -rf "$temp_dir"
-      continue
-    fi
-    
-    # Extract the extension
-    if ! /usr/bin/unzip -o -q "$zip_file" -d "$target_dir"; then
-      echo "ERROR: Failed to extract $extension_name"
-    else
-      echo "Loaded extension $extension_name into $target_dir"
-    fi
-  else
-    echo "ERROR: Failed to download $extension_name"
+  # Download and extract the extension; any failure must fail the build
+  if ! /usr/bin/curl --fail --location --silent --show-error -o "$zip_file" "$extension_url"; then
+    echo "ERROR: Failed to download $extension_name" >&2
+    /bin/rm -rf "$temp_dir"
+    exit 1
   fi
-  
+
+  if ! /usr/bin/unzip -o -q "$zip_file" -d "$target_dir"; then
+    echo "ERROR: Failed to extract $extension_name" >&2
+    /bin/rm -rf "$temp_dir"
+    exit 1
+  fi
+  echo "Loaded extension $extension_name into $target_dir"
+
   # Clean up
   /bin/rm -rf "$temp_dir"
 

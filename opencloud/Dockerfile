@@ -1,11 +1,11 @@
-ARG OPENCLOUD_VERSION=7.5.0@sha256:6db1cfb06d430a663f16e9f33dcd4596d82a4875be0b4df233c26ce5f667ea74
-ARG TARGETARCH
+# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
 
-FROM --platform=linux/${TARGETARCH} opencloudeu/opencloud-rolling:${OPENCLOUD_VERSION}
+ARG OPENCLOUD_VERSION=7.5.0@sha256:6db1cfb06d430a663f16e9f33dcd4596d82a4875be0b4df233c26ce5f667ea74
+
+FROM opencloudeu/opencloud-rolling:${OPENCLOUD_VERSION}
 
 ARG UID=10001
 ARG GID=10001
-ARG EXTENSIONS_DIR=/var/lib/opencloud/web-extensions
 
 USER root
 
@@ -13,8 +13,7 @@ RUN addgroup -S -g $GID opencloud \
      && adduser -S -H --home /var/lib/opencloud --shell /bin/bash -u $UID -G opencloud opencloud \
      && chown -R $UID:$GID /var/lib/opencloud \
      && chown -R $UID:$GID /etc/opencloud \
-     && mkdir /etc/opencloud-configs \
-     && chown -R $UID:$GID /etc/opencloud-configs
+     && install -d -o $UID -g $GID /etc/opencloud-configs /opt/web-extensions
 
 USER opencloud
 
@@ -43,11 +42,12 @@ ENV OC_EXTENSION_UNZIP=https://github.com/opencloud-eu/web-extensions/releases/d
     OC_EXTENSION_EXTERNAL_SITES=https://github.com/opencloud-eu/web-extensions/releases/download/external-sites-v${EXTERNAL_SITES_VERSION}/external-sites-${EXTERNAL_SITES_VERSION}.zip \
     OC_EXTENSION_DRAWIO=https://github.com/opencloud-eu/web-extensions/releases/download/draw-io-v${DRAWIO_VERSION}/draw-io-${DRAWIO_VERSION}.zip
 
-RUN /var/lib/scripts/load-extensions.sh "$EXTENSIONS_DIR"
+# Bake extensions outside the data volume; the entrypoint syncs them into
+# /var/lib/opencloud/web-extensions on every start (PVC mounts shadow images).
+RUN /var/lib/scripts/load-extensions.sh /opt/web-extensions
 
 VOLUME [ "/var/lib/opencloud", "/etc/opencloud-configs" ]
-ENTRYPOINT [ "/bin/sh" ]
-CMD [ "/var/lib/scripts/entrypoint.sh" ]
+ENTRYPOINT [ "/var/lib/scripts/entrypoint.sh" ]
 # 9200 serves TLS with a self-signed cert (opencloud init --insecure=false),
 # so probe via curl; exec form keeps the command a single literal.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
