@@ -70,4 +70,7 @@ USER 10001:10001
 WORKDIR /config
 VOLUME ["/config"]
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/bin/bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8686 || exit 1; printf 'GET /ping HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3; IFS= read -r status <&3 || exit 1; [[ \"$status\" == *' 200 '* ]] || exit 1"]
+
 ENTRYPOINT ["/usr/bin/catatonit", "--", "/entrypoint.sh"]
