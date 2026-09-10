@@ -12,7 +12,7 @@ RUN apt-get update \
     && apt-get autoremove --yes \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g $GID jellyfin \
-    && useradd --create-home --home-dir /config --shell /bin/bash -u $UID -g $GID -G video jellyfin \
+    && useradd --create-home --home-dir /config --shell /usr/sbin/nologin -u $UID -g $GID -G video jellyfin \
     && mkdir -p /cache \
     && chown $UID:$GID /cache
 
