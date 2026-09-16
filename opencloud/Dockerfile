@@ -20,7 +20,7 @@ USER opencloud
 COPY --chmod=500 --chown=opencloud load-extensions.sh entrypoint.sh /var/lib/scripts/
 
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^unzip-v(?<version>\d+\.\d+\.\d+)$"
-ARG UNZIP_VERSION=2.1.0
+ARG UNZIP_VERSION=2.2.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^arcade-v(?<version>\d+\.\d+\.\d+)$"
 ARG ARCADE_VERSION=3.0.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^maps-v(?<version>\d+\.\d+\.\d+)$"
