@@ -1,0 +1,7 @@
+{
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["FLOPPY_VERSION"],
+  "tagTemplates": [
+    "{FLOPPY_VERSION}"
+  ]
+}
