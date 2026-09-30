@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+# syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
 ARG OPENCLOUD_VERSION=8.0.1@sha256:1e78144071ab3fc20d2533dd4c5709d24b7e1669c96439fdf7c73cb2808a5d5e
 

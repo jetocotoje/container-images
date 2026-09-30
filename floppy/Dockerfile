@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+# syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
 ARG FLOPPY_VERSION=26.9.24@sha256:0a8d4caef10485d5f26d6b26218d197e2723826d34e3064b080d15b457123f6f
 
