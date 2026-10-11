@@ -11,6 +11,10 @@ Included extensions:
 - JSON Viewer
 - External Sites
 - Draw.IO
+- Pastebin
+- Calculator
+- BPMN
+- Excalidraw
 
 ---
 

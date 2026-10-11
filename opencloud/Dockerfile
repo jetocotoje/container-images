@@ -33,6 +33,14 @@ ARG JSON_VIEWER_VERSION=2.1.0
 ARG EXTERNAL_SITES_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^draw-io-v(?<version>\d+\.\d+\.\d+)$"
 ARG DRAWIO_VERSION=2.2.0
+# renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^pastebin-v(?<version>\d+\.\d+\.\d+)$"
+ARG PASTEBIN_VERSION=2.2.0
+# renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^calculator-v(?<version>\d+\.\d+\.\d+)$"
+ARG CALCULATOR_VERSION=2.1.0
+# renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^bpmn-v(?<version>\d+\.\d+\.\d+)$"
+ARG BPMN_VERSION=1.1.1
+# renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^excalidraw-v(?<version>\d+\.\d+\.\d+)$"
+ARG EXCALIDRAW_VERSION=1.1.0
 
 ENV OC_EXTENSION_UNZIP=https://github.com/opencloud-eu/web-extensions/releases/download/unzip-v${UNZIP_VERSION}/unzip-${UNZIP_VERSION}.zip \
     OC_EXTENSION_PROGRESS_BARS=https://github.com/opencloud-eu/web-extensions/releases/download/progress-bars-v${PROGRESS_BARS_VERSION}/progress-bars-${PROGRESS_BARS_VERSION}.zip \
@@ -41,6 +49,10 @@ ENV OC_EXTENSION_UNZIP=https://github.com/opencloud-eu/web-extensions/releases/d
     OC_EXTENSION_MAPS=https://github.com/opencloud-eu/web-extensions/releases/download/maps-v${MAPS_VERSION}/maps-${MAPS_VERSION}.zip \
     OC_EXTENSION_EXTERNAL_SITES=https://github.com/opencloud-eu/web-extensions/releases/download/external-sites-v${EXTERNAL_SITES_VERSION}/external-sites-${EXTERNAL_SITES_VERSION}.zip \
     OC_EXTENSION_DRAWIO=https://github.com/opencloud-eu/web-extensions/releases/download/draw-io-v${DRAWIO_VERSION}/draw-io-${DRAWIO_VERSION}.zip \
+    OC_EXTENSION_PASTEBIN=https://github.com/opencloud-eu/web-extensions/releases/download/pastebin-v${PASTEBIN_VERSION}/pastebin-${PASTEBIN_VERSION}.zip \
+    OC_EXTENSION_CALCULATOR=https://github.com/opencloud-eu/web-extensions/releases/download/calculator-v${CALCULATOR_VERSION}/calculator-${CALCULATOR_VERSION}.zip \
+    OC_EXTENSION_BPMN=https://github.com/opencloud-eu/web-extensions/releases/download/bpmn-v${BPMN_VERSION}/bpmn-${BPMN_VERSION}.zip \
+    OC_EXTENSION_EXCALIDRAW=https://github.com/opencloud-eu/web-extensions/releases/download/excalidraw-v${EXCALIDRAW_VERSION}/excalidraw-${EXCALIDRAW_VERSION}.zip \
     WEB_ASSET_APPS_PATH=/opt/web-extensions
 
 RUN /var/lib/scripts/load-extensions.sh
