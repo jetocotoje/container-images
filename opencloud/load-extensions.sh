@@ -1,8 +1,7 @@
 #!/bin/sh
 set -e
 
-DEFAULT_TARGET_DIR="/var/lib/opencloud/web-extensions"
-target_dir="${1:-${TARGET_DIR:-$DEFAULT_TARGET_DIR}}"
+target_dir="${1:-$WEB_ASSET_APPS_PATH}"
 
 if [ -z "$target_dir" ]; then
   echo "ERROR: Target directory is not set"

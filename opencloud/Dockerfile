@@ -40,11 +40,10 @@ ENV OC_EXTENSION_UNZIP=https://github.com/opencloud-eu/web-extensions/releases/d
     OC_EXTENSION_ARCADE=https://github.com/opencloud-eu/web-extensions/releases/download/arcade-v${ARCADE_VERSION}/arcade-${ARCADE_VERSION}.zip \
     OC_EXTENSION_MAPS=https://github.com/opencloud-eu/web-extensions/releases/download/maps-v${MAPS_VERSION}/maps-${MAPS_VERSION}.zip \
     OC_EXTENSION_EXTERNAL_SITES=https://github.com/opencloud-eu/web-extensions/releases/download/external-sites-v${EXTERNAL_SITES_VERSION}/external-sites-${EXTERNAL_SITES_VERSION}.zip \
-    OC_EXTENSION_DRAWIO=https://github.com/opencloud-eu/web-extensions/releases/download/draw-io-v${DRAWIO_VERSION}/draw-io-${DRAWIO_VERSION}.zip
+    OC_EXTENSION_DRAWIO=https://github.com/opencloud-eu/web-extensions/releases/download/draw-io-v${DRAWIO_VERSION}/draw-io-${DRAWIO_VERSION}.zip \
+    WEB_ASSET_APPS_PATH=/opt/web-extensions
 
-# Bake extensions outside the data volume; the entrypoint syncs them into
-# /var/lib/opencloud/web-extensions on every start (PVC mounts shadow images).
-RUN /var/lib/scripts/load-extensions.sh /opt/web-extensions
+RUN /var/lib/scripts/load-extensions.sh
 
 VOLUME [ "/var/lib/opencloud", "/etc/opencloud-configs" ]
 ENTRYPOINT [ "/var/lib/scripts/entrypoint.sh" ]

@@ -49,7 +49,7 @@ Paths inside the container that are intended for persistent or external data:
 
 | Path in container        | Contents / purpose   | Notes                                                                                |
 |--------------------------|----------------------|--------------------------------------------------------------------------------------|
-| `/var/lib/opencloud`     | All stored data      | Extensions under `web-extensions/` are re-synced from the image on every start       |
+| `/var/lib/opencloud`     | All stored data      | Extensions are served from `/opt/web-extensions` in the image (`WEB_ASSET_APPS_PATH`) |
 | `/etc/opencloud-configs` | Custom configuration | Any yaml configuration files are copied from here to /etc/opencloud for k8s purposes |
 
 ### User / permissions

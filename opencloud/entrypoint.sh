@@ -23,12 +23,6 @@ else
   echo "Warning: /etc/opencloud-configs is not readable. Skipping config copy." >&2
 fi
 
-# Volume mounts (k8s PVCs) shadow extensions baked into the image; refresh
-# them from the immutable copy so volumes stay in lockstep with image content.
-echo "Syncing web extensions"
-/bin/mkdir -p /var/lib/opencloud/web-extensions
-/bin/cp -fR /opt/web-extensions/. /var/lib/opencloud/web-extensions/
-
 echo "Starting Opencloud"
 
 exec /usr/bin/opencloud server "$@"
