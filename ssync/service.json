@@ -1,0 +1,7 @@
+{
+  "platforms": ["linux/amd64"],
+  "versionArgs": ["SSYNC_VERSION"],
+  "tagTemplates": [
+    "v{SSYNC_VERSION}"
+  ]
+}
