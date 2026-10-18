@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
-ARG FLOPPY_VERSION=26.10.8@sha256:b90eb406e0b19725f9bef1bb6356f2492afc2991e8ba7dd6cd413b7514d60a4d
+ARG FLOPPY_VERSION=26.10.15@sha256:6bb996a3b854f98bf2e0c4a02bd6abb67d2060706e93869abb10ad523dc12b32
 
 FROM ghcr.io/dannyvfilms/floppy:${FLOPPY_VERSION}
 
