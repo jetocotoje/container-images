@@ -15,7 +15,7 @@ import pathlib
 import subprocess
 import sys
 import time
-from typing import Callable, List, Optional
+from typing import Callable
 
 HEALTH_TIMEOUT_SECONDS = 180
 POLL_SECONDS = 3
@@ -25,7 +25,7 @@ def log(msg: str) -> None:
     print(msg, flush=True)
 
 
-def load_smoke_args(service_dir: pathlib.Path) -> Optional[List[str]]:
+def load_smoke_args(service_dir: pathlib.Path) -> list[str] | None:
     cfg = json.loads((service_dir / "service.json").read_text())
     args = cfg.get("smokeArgs")
     if args is None:
@@ -42,7 +42,7 @@ def docker(*args: str) -> str:
     return proc.stdout.strip()
 
 
-def run_command(image: str, args: List[str]) -> bool:
+def run_command(image: str, args: list[str]) -> bool:
     log(f"Running {image} {' '.join(args)}")
     return subprocess.run(["docker", "run", "--rm", image, *args]).returncode == 0
 
@@ -91,7 +91,7 @@ def run_until_healthy(image: str) -> bool:
     return healthy
 
 
-def main(argv: Optional[List[str]] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--service-dir", required=True, type=pathlib.Path)
     parser.add_argument("--image", required=True)

@@ -210,7 +210,7 @@ def main() -> int:
 
     log("### Discovering services (*/service.json)")
     services = load_services(scheduled_only=rebuild)
-    dump("All services", services)
+    dump("Services with scheduledRebuild" if rebuild else "All services", services)
 
     if not services:
         log("No services detected; emitting empty matrix.")
@@ -218,7 +218,7 @@ def main() -> int:
         return 0
 
     if rebuild:
-        log("Scheduled rebuild; selecting every service with scheduledRebuild.")
+        log("Rebuild requested; selecting every service with scheduledRebuild.")
         selected = services
     else:
         log("### Determining changed directories")
