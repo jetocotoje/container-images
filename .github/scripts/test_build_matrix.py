@@ -100,8 +100,8 @@ class LoadServicesTest(unittest.TestCase):
 
         self.assertEqual(names, ["floppy", "lidarr", "opencloud", "prowlarr"])
 
-    def test_scheduled_only_keeps_services_with_scheduled_rebuild(self) -> None:
-        names = [svc["name"] for svc in builder.load_services(scheduled_only=True)]
+    def test_rebuild_keeps_services_with_scheduled_rebuild(self) -> None:
+        names = [svc["name"] for svc in builder.load_services(rebuild=True)]
 
         self.assertEqual(names, ["lidarr"])
 
@@ -114,7 +114,7 @@ class LoadServicesTest(unittest.TestCase):
         )
 
     def test_smokes_every_service_in_a_rebuild(self) -> None:
-        smoke = [svc["smoke"] for svc in builder.load_services(scheduled_only=True)]
+        smoke = [svc["smoke"] for svc in builder.load_services(rebuild=True)]
 
         self.assertEqual(smoke, ["true"])
 

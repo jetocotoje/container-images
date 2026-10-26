@@ -97,6 +97,9 @@ jobs:
           fi
           {
             echo "image=${image}"
+            if [ "${REBUILD}" != "true" ]; then
+              echo "cache_from=type=registry,ref=${cache_ref}"
+            fi
             if [ "${{ matrix.smoke }}" = "true" ]; then
               # Only a smoke-tested build may reach the registry, its cache included.
               smoke_image="smoke-${{ matrix.name }}:${{ matrix.slug }}"
@@ -104,11 +107,7 @@ jobs:
               echo "build_outputs=type=docker,name=${smoke_image}"
               echo "push_outputs=${push_outputs}"
               echo "push_cache_to=${cache_to}"
-              if [ "${REBUILD}" != "true" ]; then
-                echo "cache_from=type=registry,ref=${cache_ref}"
-              fi
             else
-              echo "cache_from=type=registry,ref=${cache_ref}"
               echo "build_cache_to=${cache_to}"
               if [ "${PUSH}" = "true" ]; then
                 echo "build_outputs=${push_outputs}"

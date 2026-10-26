@@ -95,13 +95,13 @@ def changed_top_level_dirs(base: str | None) -> List[str]:
     return load_dirs_from_stdout(diff.stdout)
 
 
-def load_services(scheduled_only: bool = False) -> List[Dict[str, str]]:
+def load_services(rebuild: bool = False) -> List[Dict[str, str]]:
     services: List[Dict[str, str]] = []
     for cfg_path in sorted(pathlib.Path(".").glob("*/service.json")):
         dir_path = cfg_path.parent
         name = dir_path.name
         cfg = json.loads(cfg_path.read_text())
-        if scheduled_only and cfg.get("scheduledRebuild") is not True:
+        if rebuild and cfg.get("scheduledRebuild") is not True:
             continue
 
         context = cfg.get("context", str(dir_path))
@@ -125,7 +125,7 @@ def load_services(scheduled_only: bool = False) -> List[Dict[str, str]]:
                 "dockerfile": dockerfile_path,
                 "platforms": platforms_value,
                 "smoke": "true"
-                if scheduled_only or cfg.get("smokeEveryBuild") is True
+                if rebuild or cfg.get("smokeEveryBuild") is True
                 else "false",
             }
         )
@@ -217,7 +217,7 @@ def main() -> int:
     )
 
     log("### Discovering services (*/service.json)")
-    services = load_services(scheduled_only=rebuild)
+    services = load_services(rebuild=rebuild)
     dump("Services with scheduledRebuild" if rebuild else "All services", services)
 
     if not services:
