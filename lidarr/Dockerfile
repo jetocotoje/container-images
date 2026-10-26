@@ -42,6 +42,7 @@ ENV DOTNET_EnableDiagnostics=0 \
 WORKDIR /app
 
 RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         ca-certificates \
         catatonit \
