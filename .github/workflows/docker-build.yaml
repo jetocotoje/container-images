@@ -97,13 +97,16 @@ jobs:
           fi
           {
             echo "image=${image}"
-            if [ "${REBUILD}" = "true" ]; then
+            if [ "${{ matrix.smoke }}" = "true" ]; then
               # Only a smoke-tested build may reach the registry, its cache included.
               smoke_image="smoke-${{ matrix.name }}:${{ matrix.slug }}"
               echo "smoke_image=${smoke_image}"
               echo "build_outputs=type=docker,name=${smoke_image}"
               echo "push_outputs=${push_outputs}"
               echo "push_cache_to=${cache_to}"
+              if [ "${REBUILD}" != "true" ]; then
+                echo "cache_from=type=registry,ref=${cache_ref}"
+              fi
             else
               echo "cache_from=type=registry,ref=${cache_ref}"
               echo "build_cache_to=${cache_to}"
@@ -129,12 +132,12 @@ jobs:
           sbom: ${{ steps.refs.outputs.build_sbom == 'true' }}
 
       - name: Smoke-test ${{ matrix.name }} (${{ matrix.platform }})
-        if: ${{ env.REBUILD == 'true' }}
+        if: ${{ matrix.smoke == 'true' }}
         run: python3 .github/scripts/smoke_test.py --service-dir "${{ matrix.dir }}" --image "${{ steps.refs.outputs.smoke_image }}"
 
       - name: Push ${{ matrix.name }} (${{ matrix.platform }})
         id: push
-        if: ${{ env.REBUILD == 'true' && env.PUSH == 'true' }}
+        if: ${{ matrix.smoke == 'true' && env.PUSH == 'true' }}
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
         with:
           context: ${{ matrix.context }}
@@ -152,7 +155,7 @@ jobs:
           PUSH_DIGEST: ${{ steps.push.outputs.digest }}
         run: |
           digest="${BUILD_DIGEST}"
-          if [ "${REBUILD}" = "true" ]; then
+          if [ "${{ matrix.smoke }}" = "true" ]; then
             digest="${PUSH_DIGEST}"
           fi
           if [ -z "${digest}" ]; then

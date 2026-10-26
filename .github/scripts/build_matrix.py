@@ -14,6 +14,10 @@ stitches the per-platform digests into a multi-platform manifest.
 
 With ``REBUILD=true`` the selection ignores changes and takes every service
 whose ``service.json`` sets ``"scheduledRebuild": true``.
+
+Each entry's ``smoke`` says whether the build is smoke-tested before it is
+published: always in a rebuild, and on every event for services whose
+``service.json`` sets ``"smokeEveryBuild": true``.
 """
 
 from __future__ import annotations
@@ -120,6 +124,9 @@ def load_services(scheduled_only: bool = False) -> List[Dict[str, str]]:
                 "context": context,
                 "dockerfile": dockerfile_path,
                 "platforms": platforms_value,
+                "smoke": "true"
+                if scheduled_only or cfg.get("smokeEveryBuild") is True
+                else "false",
             }
         )
 
@@ -146,6 +153,7 @@ def expand_matrix_entries(
                     "platform": platform,
                     "slug": platform.replace("/", "-"),
                     "runner": platform_runner(platform),
+                    "smoke": svc["smoke"],
                 }
             )
     return entries

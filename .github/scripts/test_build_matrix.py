@@ -25,6 +25,7 @@ def service(platforms: str) -> dict[str, str]:
         "context": "librespeed",
         "dockerfile": "librespeed/Dockerfile",
         "platforms": platforms,
+        "smoke": "false",
     }
 
 
@@ -53,6 +54,7 @@ class ExpandMatrixEntriesTest(unittest.TestCase):
             self.assertEqual(entry["context"], "librespeed")
             self.assertEqual(entry["dockerfile"], "librespeed/Dockerfile")
             self.assertEqual(entry["slug"], platform.replace("/", "-"))
+            self.assertEqual(entry["smoke"], "false")
         self.assertEqual(by_platform["linux/arm64"]["runner"], "ubuntu-24.04-arm")
         self.assertEqual(
             by_platform["linux/amd64"]["runner"], builder.DEFAULT_RUNNER
@@ -71,6 +73,7 @@ class ExpandMatrixEntriesTest(unittest.TestCase):
                     "platform": "linux/amd64",
                     "slug": "linux-amd64",
                     "runner": builder.DEFAULT_RUNNER,
+                    "smoke": "false",
                 }
             ],
         )
@@ -87,6 +90,7 @@ class LoadServicesTest(unittest.TestCase):
             "floppy": {},
             "lidarr": {"scheduledRebuild": True},
             "opencloud": {"scheduledRebuild": False},
+            "prowlarr": {"smokeEveryBuild": True},
         }.items():
             pathlib.Path(name).mkdir()
             pathlib.Path(name, "service.json").write_text(json.dumps(cfg))
@@ -94,12 +98,25 @@ class LoadServicesTest(unittest.TestCase):
     def test_loads_every_service_by_default(self) -> None:
         names = [svc["name"] for svc in builder.load_services()]
 
-        self.assertEqual(names, ["floppy", "lidarr", "opencloud"])
+        self.assertEqual(names, ["floppy", "lidarr", "opencloud", "prowlarr"])
 
     def test_scheduled_only_keeps_services_with_scheduled_rebuild(self) -> None:
         names = [svc["name"] for svc in builder.load_services(scheduled_only=True)]
 
         self.assertEqual(names, ["lidarr"])
+
+    def test_smokes_only_services_with_smoke_every_build(self) -> None:
+        smoke = {svc["name"]: svc["smoke"] for svc in builder.load_services()}
+
+        self.assertEqual(
+            smoke,
+            {"floppy": "false", "lidarr": "false", "opencloud": "false", "prowlarr": "true"},
+        )
+
+    def test_smokes_every_service_in_a_rebuild(self) -> None:
+        smoke = [svc["smoke"] for svc in builder.load_services(scheduled_only=True)]
+
+        self.assertEqual(smoke, ["true"])
 
 
 class WriteOutputTest(unittest.TestCase):
