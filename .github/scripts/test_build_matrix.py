@@ -76,6 +76,32 @@ class ExpandMatrixEntriesTest(unittest.TestCase):
         )
 
 
+class LoadServicesTest(unittest.TestCase):
+    def setUp(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        cwd = os.getcwd()
+        self.addCleanup(os.chdir, cwd)
+        os.chdir(tmp.name)
+        for name, cfg in {
+            "floppy": {},
+            "lidarr": {"scheduledRebuild": True},
+            "opencloud": {"scheduledRebuild": False},
+        }.items():
+            pathlib.Path(name).mkdir()
+            pathlib.Path(name, "service.json").write_text(json.dumps(cfg))
+
+    def test_loads_every_service_by_default(self) -> None:
+        names = [svc["name"] for svc in builder.load_services()]
+
+        self.assertEqual(names, ["floppy", "lidarr", "opencloud"])
+
+    def test_scheduled_only_keeps_services_with_scheduled_rebuild(self) -> None:
+        names = [svc["name"] for svc in builder.load_services(scheduled_only=True)]
+
+        self.assertEqual(names, ["lidarr"])
+
+
 class WriteOutputTest(unittest.TestCase):
     def test_writes_both_matrices_and_has_work(self) -> None:
         with tempfile.NamedTemporaryFile("r", suffix=".out") as fh:

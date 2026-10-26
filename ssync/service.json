@@ -1,4 +1,6 @@
 {
+  "scheduledRebuild": true,
+  "smokeArgs": ["--version"],
   "platforms": ["linux/amd64"],
   "versionArgs": ["SSYNC_VERSION"],
   "tagTemplates": [

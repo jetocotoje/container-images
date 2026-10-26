@@ -11,6 +11,9 @@ Two matrices are emitted: ``matrix`` expands each selected service into one
 entry per target platform (each pinned to a runner that executes that platform
 natively), and ``merge_matrix`` has one entry per service for the job that
 stitches the per-platform digests into a multi-platform manifest.
+
+With ``REBUILD=true`` the selection ignores changes and takes every service
+whose ``service.json`` sets ``"scheduledRebuild": true``.
 """
 
 from __future__ import annotations
@@ -88,12 +91,14 @@ def changed_top_level_dirs(base: str | None) -> List[str]:
     return load_dirs_from_stdout(diff.stdout)
 
 
-def load_services() -> List[Dict[str, str]]:
+def load_services(scheduled_only: bool = False) -> List[Dict[str, str]]:
     services: List[Dict[str, str]] = []
     for cfg_path in sorted(pathlib.Path(".").glob("*/service.json")):
         dir_path = cfg_path.parent
         name = dir_path.name
         cfg = json.loads(cfg_path.read_text())
+        if scheduled_only and cfg.get("scheduledRebuild") is not True:
+            continue
 
         context = cfg.get("context", str(dir_path))
         dockerfile = cfg.get("dockerfile")
@@ -196,6 +201,7 @@ def dump(label: str, data: object) -> None:
 
 def main() -> int:
     event_name = os.environ.get("EVENT_NAME", "")
+    rebuild = os.environ.get("REBUILD") == "true"
     base = (
         os.environ.get("PR_BASE_SHA")
         if event_name == "pull_request"
@@ -203,7 +209,7 @@ def main() -> int:
     )
 
     log("### Discovering services (*/service.json)")
-    services = load_services()
+    services = load_services(scheduled_only=rebuild)
     dump("All services", services)
 
     if not services:
@@ -211,10 +217,13 @@ def main() -> int:
         write_output({"include": []}, {"include": []}, False)
         return 0
 
-    log("### Determining changed directories")
-    changed_dirs = changed_top_level_dirs(base)
-
-    selected = select_services(services, changed_dirs)
+    if rebuild:
+        log("Scheduled rebuild; selecting every service with scheduledRebuild.")
+        selected = services
+    else:
+        log("### Determining changed directories")
+        changed_dirs = changed_top_level_dirs(base)
+        selected = select_services(services, changed_dirs)
     has_work = bool(selected)
 
     build_matrix = {"include": expand_matrix_entries(selected)}
