@@ -1,6 +1,5 @@
-# Points a deps.json at the overlaid runtime packs: renames the runtimepack
-# libraries from $old to $new and takes each asset's versions from the
-# framework deps.json files of the new runtime.
+# Requires --arg old/new (runtime versions) and --slurpfile netcore/aspnetcore
+# (the new runtime's framework deps.json files).
 ([$netcore[0], $aspnetcore[0]]
   | map(.targets[.runtimeTarget.name][] | (.runtime // {}) + (.native // {}))
   | add) as $assets

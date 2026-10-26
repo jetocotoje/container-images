@@ -6,7 +6,6 @@ FROM ghcr.io/home-operations/prowlarr:${PROWLARR_VERSION} AS upstream
 
 FROM --platform=$BUILDPLATFORM ghcr.io/home-operations/prowlarr:${PROWLARR_VERSION} AS dotnet
 
-# Hashes from https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json
 ARG DOTNET_VERSION=8.0.33
 ARG DOTNET_RUNTIME_SHA512_X64=70d8a4f126a57459102b837233e03e68e345efdad5b8e5a37ff500b0e5ecfcfa49d465c890a4d974ca7df7e0d30bd0ede1976c21ede239ce704b0c6c8d931c46
 ARG DOTNET_RUNTIME_SHA512_ARM64=4a19f344d147804d6261d67cf484c214dfdf470ff9097522b87a8f684b1593fbbd3c7ee4989936d0d8d62b40deb8d53710f946d54a3430ed721be592fa453ca4
@@ -52,10 +51,10 @@ RUN case "${TARGETARCH}" in \
         ! -name '*.deps.json' ! -name '*.runtimeconfig.json' ! -name '*.txt' \
         -exec cp -p {} /out/ \; \
     && cp -p "runtime/host/fxr/${DOTNET_VERSION}/libhostfxr.so" /out/ \
-    && jq -r '.targets[.runtimeTarget.name] | to_entries[] | select(.key | startswith("runtimepack.")) | .value | (.runtime // {}), (.native // {}) | keys[]' /out/*.deps.json \
-        | while read -r asset; do \
-            [ -f "/out/${asset}" ] || { echo "Runtime pack asset not overlaid: ${asset}" >&2; exit 1; }; \
-        done
+    && jq -er '.targets[.runtimeTarget.name] | to_entries[] | select(.key | startswith("runtimepack.")) | .value | (.runtime // {}), (.native // {}) | keys[]' /out/*.deps.json > assets.txt \
+    && while read -r asset; do \
+        [ -f "/out/${asset}" ] || { echo "Runtime pack asset not overlaid: ${asset}" >&2; exit 1; }; \
+    done < assets.txt
 
 FROM upstream
 
