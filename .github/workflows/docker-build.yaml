@@ -90,23 +90,29 @@ jobs:
           image="$(printf '%s/%s/%s' "${REGISTRY}" "${IMAGE_PREFIX}" "${{ matrix.name }}" | tr '[:upper:]' '[:lower:]')"
           cache_ref="$(printf '%s/%s/buildcache' "${REGISTRY}" "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]'):${{ matrix.name }}-${{ matrix.slug }}"
           push_outputs="type=image,name=${image},push-by-digest=true,name-canonical=true,push=true"
-          {
-            echo "image=${image}"
-            echo "cache_ref=${cache_ref}"
-            echo "push_outputs=${push_outputs}"
-          } >> "$GITHUB_OUTPUT"
+          cache_to=""
           # Fork PRs run with a read-only GITHUB_TOKEN and cannot push the cache.
           if [ "${PR_FORK}" != "true" ]; then
-            echo "cache_to=type=registry,mode=max,ref=${cache_ref}" >> "$GITHUB_OUTPUT"
+            cache_to="type=registry,mode=max,ref=${cache_ref}"
           fi
-          # Rebuilds load the image for the smoke test; the push step publishes it afterwards.
-          if [ "${REBUILD}" = "true" ]; then
-            smoke_image="smoke-${{ matrix.name }}:${{ matrix.slug }}"
-            echo "smoke_image=${smoke_image}" >> "$GITHUB_OUTPUT"
-            echo "outputs=type=docker,name=${smoke_image}" >> "$GITHUB_OUTPUT"
-          elif [ "${PUSH}" = "true" ]; then
-            echo "outputs=${push_outputs}" >> "$GITHUB_OUTPUT"
-          fi
+          {
+            echo "image=${image}"
+            if [ "${REBUILD}" = "true" ]; then
+              # Only a smoke-tested build may reach the registry, its cache included.
+              smoke_image="smoke-${{ matrix.name }}:${{ matrix.slug }}"
+              echo "smoke_image=${smoke_image}"
+              echo "build_outputs=type=docker,name=${smoke_image}"
+              echo "push_outputs=${push_outputs}"
+              echo "push_cache_to=${cache_to}"
+            else
+              echo "cache_from=type=registry,ref=${cache_ref}"
+              echo "build_cache_to=${cache_to}"
+              if [ "${PUSH}" = "true" ]; then
+                echo "build_outputs=${push_outputs}"
+                echo "build_sbom=true"
+              fi
+            fi
+          } >> "$GITHUB_OUTPUT"
 
       - name: Build ${{ matrix.name }} (${{ matrix.platform }})
         id: build
@@ -115,12 +121,12 @@ jobs:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
           platforms: ${{ matrix.platform }}
-          outputs: ${{ steps.refs.outputs.outputs }}
+          outputs: ${{ steps.refs.outputs.build_outputs }}
           no-cache: ${{ env.REBUILD == 'true' }}
-          cache-from: type=registry,ref=${{ steps.refs.outputs.cache_ref }}
-          cache-to: ${{ steps.refs.outputs.cache_to }}
+          cache-from: ${{ steps.refs.outputs.cache_from }}
+          cache-to: ${{ steps.refs.outputs.build_cache_to }}
           labels: ${{ steps.meta.outputs.labels }}
-          sbom: ${{ env.PUSH == 'true' && env.REBUILD != 'true' }}
+          sbom: ${{ steps.refs.outputs.build_sbom == 'true' }}
 
       - name: Smoke-test ${{ matrix.name }} (${{ matrix.platform }})
         if: ${{ env.REBUILD == 'true' }}
@@ -135,14 +141,25 @@ jobs:
           file: ${{ matrix.dockerfile }}
           platforms: ${{ matrix.platform }}
           outputs: ${{ steps.refs.outputs.push_outputs }}
+          cache-to: ${{ steps.refs.outputs.push_cache_to }}
           labels: ${{ steps.meta.outputs.labels }}
           sbom: true
 
       - name: Export digest
         if: ${{ env.PUSH == 'true' }}
+        env:
+          BUILD_DIGEST: ${{ steps.build.outputs.digest }}
+          PUSH_DIGEST: ${{ steps.push.outputs.digest }}
         run: |
+          digest="${BUILD_DIGEST}"
+          if [ "${REBUILD}" = "true" ]; then
+            digest="${PUSH_DIGEST}"
+          fi
+          if [ -z "${digest}" ]; then
+            echo "No pushed digest for ${{ matrix.name }} (${{ matrix.platform }})" >&2
+            exit 1
+          fi
           mkdir -p /tmp/digests
-          digest="${{ steps.push.outputs.digest || steps.build.outputs.digest }}"
           echo "${digest#sha256:}" > "/tmp/digests/${{ matrix.slug }}"
 
       - name: Upload digest
