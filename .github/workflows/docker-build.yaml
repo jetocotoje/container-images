@@ -120,6 +120,7 @@ jobs:
           cache-from: type=registry,ref=${{ steps.refs.outputs.cache_ref }}
           cache-to: ${{ steps.refs.outputs.cache_to }}
           labels: ${{ steps.meta.outputs.labels }}
+          sbom: ${{ env.PUSH == 'true' && env.REBUILD != 'true' }}
 
       - name: Smoke-test ${{ matrix.name }} (${{ matrix.platform }})
         if: ${{ env.REBUILD == 'true' }}
@@ -135,6 +136,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           outputs: ${{ steps.refs.outputs.push_outputs }}
           labels: ${{ steps.meta.outputs.labels }}
+          sbom: true
 
       - name: Export digest
         if: ${{ env.PUSH == 'true' }}
