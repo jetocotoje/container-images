@@ -1,0 +1,9 @@
+{
+  "scheduledRebuild": true,
+  "smokeEveryBuild": true,
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["PROWLARR_VERSION"],
+  "tagTemplates": [
+    "{PROWLARR_VERSION}"
+  ]
+}
