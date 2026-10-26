@@ -157,7 +157,7 @@ jobs:
   merge:
     needs: [generate-matrix, build]
     runs-on: ubuntu-latest
-    if: ${{ needs.generate-matrix.outputs.has-work == 'true' && needs.generate-matrix.outputs.push == 'true' }}
+    if: ${{ !cancelled() && needs.generate-matrix.outputs.has-work == 'true' && needs.generate-matrix.outputs.push == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.generate-matrix.outputs.merge-matrix) }}
@@ -209,6 +209,7 @@ jobs:
         env:
           META_TAGS: ${{ steps.meta.outputs.tags }}
           EXTRA_TAGS: ${{ steps.tmpl.outputs.extra_tags }}
+          PLATFORMS: ${{ matrix.platforms }}
         run: |
           image="$(printf '%s/%s/%s' "${REGISTRY}" "${IMAGE_PREFIX}" "${{ matrix.name }}" | tr '[:upper:]' '[:lower:]')"
           all_tags="$(printf '%s\n%s' "${META_TAGS}" "${EXTRA_TAGS}")"
@@ -217,11 +218,13 @@ jobs:
             [ -n "$tag" ] && tag_args+=( -t "$tag" )
           done <<< "$all_tags"
           digest_args=()
-          for digest_file in /tmp/digests/*; do
-            [ -f "$digest_file" ] && digest_args+=( "${image}@sha256:$(cat "$digest_file")" )
+          IFS=, read -ra platforms <<< "${PLATFORMS}"
+          for platform in "${platforms[@]}"; do
+            digest_file="/tmp/digests/${platform//\//-}"
+            if [ ! -f "$digest_file" ]; then
+              echo "No ${platform} digest for ${image}; not publishing it" >&2
+              exit 1
+            fi
+            digest_args+=( "${image}@sha256:$(cat "$digest_file")" )
           done
-          if [ "${#digest_args[@]}" -eq 0 ]; then
-            echo "No digests found for ${image}" >&2
-            exit 1
-          fi
           docker buildx imagetools create "${tag_args[@]}" "${digest_args[@]}"
