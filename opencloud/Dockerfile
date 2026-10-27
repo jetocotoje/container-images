@@ -9,7 +9,8 @@ ARG GID=10001
 
 USER root
 
-RUN addgroup -S -g $GID opencloud \
+RUN apk upgrade --no-cache ca-certificates ca-certificates-bundle brotli-libs \
+     && addgroup -S -g $GID opencloud \
      && adduser -S -H --home /var/lib/opencloud --shell /sbin/nologin -u $UID -G opencloud opencloud \
      && chown -R $UID:$GID /var/lib/opencloud \
      && chown -R $UID:$GID /etc/opencloud \
