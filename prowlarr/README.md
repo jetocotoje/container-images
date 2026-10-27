@@ -1,10 +1,8 @@
 # Prowlarr
 
-Temporary wrapper over `ghcr.io/home-operations/prowlarr` that replaces the bundled .NET runtime with Microsoft's
-.NET 8.0.33 build, which fixes the Brotli decoder CVE-2026-111497, and runs `apk upgrade`.
-
-Delete this image once an upstream Prowlarr release bundles .NET 8.0.33 or newer. The build fails once the upstream
-image's bundled runtime is no older than `DOTNET_VERSION`.
+Permanent wrapper over `ghcr.io/home-operations/prowlarr` that keeps the bundled .NET runtime on the latest .NET 8 patch
+and runs `apk upgrade`. Upstream Prowlarr releases can lag several .NET patches behind, as with the Brotli decoder
+CVE-2026-111497 fixed in 8.0.33.
 
 ---
 
@@ -48,10 +46,25 @@ Unchanged from `ghcr.io/home-operations/prowlarr`.
 
 ### Runtime overlay
 
-- `dotnet-runtime` and `aspnetcore-runtime` 8.0.33 (`linux-musl-x64` / `linux-musl-arm64`) are downloaded from
-  `builds.dotnet.microsoft.com` and checked against the SHA-512 hashes pinned in the Dockerfile, taken from the
-  [8.0 release metadata](https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json).
+The build compares the .NET version upstream bundles (`includedFrameworks` in `Prowlarr.runtimeconfig.json`) with
+`DOTNET_VERSION`:
+
+- Upstream bundles an older version of the same major: the runtime is overlaid as below.
+- Upstream bundles `DOTNET_VERSION` or newer of the same major: `/app/bin` is left as shipped.
+- Upstream bundles a different major, or `includedFrameworks` has no `Microsoft.NETCore.App`: the build fails.
+
+The overlay:
+
+- `dotnet-runtime` and `aspnetcore-runtime` `DOTNET_VERSION` (`linux-musl-x64` / `linux-musl-arm64`) are downloaded
+  from `builds.dotnet.microsoft.com` and checked against the SHA-512 hashes read at build time from the release
+  metadata (`release-metadata/<major>.<minor>/releases.json`, e.g.
+  [8.0](https://builds.dotnet.microsoft.com/dotnet/release-metadata/8.0/releases.json)).
 - Their `Microsoft.NETCore.App` and `Microsoft.AspNetCore.App` files and `libhostfxr.so` replace the ones in
   `/app/bin`. The runtime pack entries in `/app/bin/*.deps.json` and `Prowlarr.runtimeconfig.json` are rewritten to
   the new version, so SBOM scanners report it.
-- To move to a newer .NET 8 patch, update `DOTNET_VERSION` and the four hashes by hand.
+
+### Updates
+
+- Renovate bumps `DOTNET_VERSION` to new patches within 8.0.x and automerges them.
+- Moving to a new .NET major is done by hand. When upstream moves to one, the build fails: set `DOTNET_VERSION` to
+  that major's latest patch and update the `allowedVersions` of the `dotnet-runtime` rule in `renovate.json`.

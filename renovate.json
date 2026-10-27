@@ -18,6 +18,15 @@
       "groupSlug": "lidarr-image-inputs"
     },
     {
+      "description": "Prowlarr's .NET runtime overlay stays on stable 8.0.x; a new major is moved by hand",
+      "matchDatasources": ["dotnet-version"],
+      "matchPackageNames": ["dotnet-runtime"],
+      "allowedVersions": "/^8\\.0\\.\\d+$/",
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true
+    },
+    {
       "description": "Numeric image tags: allow 2- and 3-segment versions (docker versioning blocks cross-schema updates, e.g. jellyfin 10.11.11 -> 12.0)",
       "matchDepNames": [
         "ghcr.io/jellyfin/jellyfin",
