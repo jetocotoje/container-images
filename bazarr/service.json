@@ -1,0 +1,9 @@
+{
+  "scheduledRebuild": true,
+  "smokeEveryBuild": true,
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["BAZARR_VERSION"],
+  "tagTemplates": [
+    "{BAZARR_VERSION}"
+  ]
+}
