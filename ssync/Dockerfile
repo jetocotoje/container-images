@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
-ARG RUST_BASE=docker.io/library/rust:1.99.1-slim-trixie@sha256:1a939748a7cbab172de91a014e3804a97af1394a8c844faa67fce9401c4e40fb
+ARG RUST_BASE=docker.io/library/rust:1.99.1-slim-trixie@sha256:45afd9478205dcdf7f98b099019fee773a33644cf69ac0a3b862eb31d2a1ccef
 ARG GO_BASE=docker.io/library/golang:1.27.3-trixie@sha256:c124b9ad3452f46061b5054607d26ea51730dae5372c5e469920063ba2bc6dcc
 ARG DEBIAN_BASE=docker.io/library/debian:trixie-slim@sha256:89c1ea91e897f0fe0a3731595330bc45b8bdef4047464a07116f891a94054b31
 
