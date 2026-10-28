@@ -44,7 +44,10 @@ Paths inside the container that are intended for persistent or external data:
 |-------------------|-----------------------------------|--------------------------------------|
 | `/floppy/backups` | Scheduled CSV exports             | Must be writable by `10001:10001`.   |
 | `/floppy/db`      | SQLite database without `DB_HOST` | Unused with PostgreSQL.              |
+| `/floppy/logs`    | Run-state and crash markers       | Default `LOG_DIR`; must be writable. |
 | `/tmp`            | Gunicorn socket, boot sizing      | Must be writable.                    |
+
+`floppy.log` and `supervisord.log` in the default log directory point to `/dev/null`; process output remains on stdout/stderr.
 
 ### User / permissions
 

@@ -4,7 +4,8 @@ Smoke-test a locally loaded service image before it is published.
 
 A service whose ``service.json`` sets ``smokeArgs`` passes when the image run
 with those arguments exits 0. Any other service passes once its container
-reports ``healthy``; an image without a HEALTHCHECK fails.
+reports ``healthy``; an image without a HEALTHCHECK fails. The readiness deadline
+is the larger of 180 seconds and the image's declared startup period.
 """
 
 from __future__ import annotations
@@ -65,10 +66,16 @@ def wait_healthy(
 
 
 def run_until_healthy(image: str) -> bool:
-    if docker("image", "inspect", "--format", "{{json .Config.Healthcheck}}", image) == "null":
+    healthcheck = json.loads(
+        docker("image", "inspect", "--format", "{{json .Config.Healthcheck}}", image)
+    )
+    if healthcheck is None:
         log(f"{image} has no HEALTHCHECK and its service.json sets no smokeArgs")
         return False
 
+    timeout = max(
+        HEALTH_TIMEOUT_SECONDS, healthcheck.get("StartPeriod", 0) / 1_000_000_000
+    )
     container = docker("run", "--detach", image)
 
     def read_state() -> tuple[str, str]:
@@ -83,7 +90,7 @@ def run_until_healthy(image: str) -> bool:
 
     healthy = False
     try:
-        healthy = wait_healthy(read_state)
+        healthy = wait_healthy(read_state, timeout=timeout)
     finally:
         if not healthy:
             subprocess.run(["docker", "logs", container])

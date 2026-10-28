@@ -9,7 +9,8 @@ ARG GID=10001
 
 COPY patch-rootless.py /tmp/patch-rootless.py
 
-RUN python /tmp/patch-rootless.py \
+RUN apk upgrade --no-cache ca-certificates ca-certificates-bundle \
+    && python /tmp/patch-rootless.py \
     && rm /tmp/patch-rootless.py \
     && groupmod -g "$GID" abc \
     && usermod -u "$UID" -g "$GID" abc \
@@ -19,7 +20,14 @@ RUN python /tmp/patch-rootless.py \
     && chown "$UID:$GID" /floppy \
     && chown -R "$UID:$GID" /floppy/logs /floppy/staticfiles /var/lib/nginx /var/log/nginx
 
+RUN ln -sf /dev/null /floppy/logs/floppy.log \
+    && ln -sf /dev/null /floppy/logs/supervisord.log
+
 ENV PUID=$UID \
-    PGID=$GID
+    PGID=$GID \
+    LOG_DIR=/floppy/logs
 
 USER $UID:$GID
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=600s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider "http://127.0.0.1:${FLOPPY_PORT:-8000}/health/"
