@@ -18,6 +18,14 @@
       "groupSlug": "lidarr-image-inputs"
     },
     {
+      "description": "Bump base image digests together once a week, before the Monday 04:00 UTC rebuild",
+      "matchCategories": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "groupName": "base image digests",
+      "groupSlug": "base-image-digests",
+      "schedule": ["* 0-3 * * 1"]
+    },
+    {
       "description": "Prowlarr's .NET runtime overlay stays on stable 8.0.x; a new major is moved by hand",
       "matchDatasources": ["dotnet-version"],
       "matchPackageNames": ["dotnet-runtime"],
