@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
 ARG LIBRESPEED_VERSION=6.3.1@sha256:bc34bf69b6c102b23ab81b6e77beb7cce321fb0d3be33ec6e80edef3e9dd8bab
-ARG PHP_BASE=docker.io/library/php:8.5.12-apache-trixie@sha256:4cc63b3d4e05c40da73e7af5d39364ca2678ac07208919497bda3bbab975be95
+ARG PHP_BASE=docker.io/library/php:8.5.12-apache-trixie@sha256:08af36df144462d84c7f16190557eec06cb9f656882685610b712a15eec54d46
 
 FROM ghcr.io/librespeed/speedtest:${LIBRESPEED_VERSION} AS source
 
