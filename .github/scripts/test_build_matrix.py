@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 import pathlib
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -129,6 +130,37 @@ class SelectServicesTest(unittest.TestCase):
         self.assertEqual(
             builder.select_services([service("linux/amd64")], [".github", "renovate.json"]),
             [],
+        )
+
+
+class ChangedTopLevelDirsTest(unittest.TestCase):
+    def test_moving_a_file_out_of_a_service_reports_the_service(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        cwd = os.getcwd()
+        self.addCleanup(os.chdir, cwd)
+        os.chdir(tmp.name)
+
+        def git(*args: str) -> str:
+            return subprocess.run(
+                ["git", "-c", "user.name=t", "-c", "user.email=t@t", *args],
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+
+        git("init", "-q")
+        pathlib.Path("librespeed").mkdir()
+        pathlib.Path("librespeed", "entrypoint.sh").write_text("echo hi\n")
+        git("add", ".")
+        git("commit", "-qm", "init")
+        base = git("rev-parse", "HEAD")
+        pathlib.Path(".github").mkdir()
+        git("mv", "librespeed/entrypoint.sh", ".github/entrypoint.sh")
+        git("commit", "-qm", "move")
+
+        self.assertEqual(
+            builder.changed_top_level_dirs(base), [".github", "librespeed"]
         )
 
 

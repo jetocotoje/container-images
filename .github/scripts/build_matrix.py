@@ -12,6 +12,9 @@ entry per target platform (each pinned to a runner that executes that platform
 natively), and ``merge_matrix`` has one entry per service for the job that
 stitches the per-platform digests into a multi-platform manifest.
 
+Otherwise only services whose directory changed are selected; a diff that
+touches no service directory selects none.
+
 With ``REBUILD=true`` the selection ignores changes and takes every service
 whose ``service.json`` sets ``"scheduledRebuild": true``.
 
@@ -84,7 +87,9 @@ def changed_top_level_dirs(base: str | None) -> List[str]:
     log(f"Fetching base commit {base} for diff comparison.")
     run_git(["fetch", "origin", base, "--depth=1"], check=False)
 
-    diff = run_git(["diff", "--name-only", f"{base}...HEAD"], check=False)
+    diff = run_git(
+        ["diff", "--name-only", "--no-renames", f"{base}...HEAD"], check=False
+    )
     if diff.returncode != 0:
         log(
             f"git diff failed ({diff.stderr.strip() or diff.returncode}); "
