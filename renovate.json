@@ -13,6 +13,14 @@
       "ignoreTests": true
     },
     {
+      "description": "Major docker updates automerge through a PR once its build passes",
+      "matchCategories": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "automergeType": "pr",
+      "ignoreTests": false,
+      "platformAutomerge": false
+    },
+    {
       "matchFileNames": ["lidarr/Dockerfile"],
       "groupName": "lidarr image inputs",
       "groupSlug": "lidarr-image-inputs"
