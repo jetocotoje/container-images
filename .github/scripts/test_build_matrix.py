@@ -119,6 +119,19 @@ class LoadServicesTest(unittest.TestCase):
         self.assertEqual(smoke, ["true"])
 
 
+class SelectServicesTest(unittest.TestCase):
+    def test_selects_services_whose_dir_changed(self) -> None:
+        selected = builder.select_services([service("linux/amd64")], ["librespeed", ".github"])
+
+        self.assertEqual([svc["name"] for svc in selected], ["librespeed"])
+
+    def test_selects_nothing_when_no_service_dir_changed(self) -> None:
+        self.assertEqual(
+            builder.select_services([service("linux/amd64")], [".github", "renovate.json"]),
+            [],
+        )
+
+
 class WriteOutputTest(unittest.TestCase):
     def test_writes_both_matrices_and_has_work(self) -> None:
         with tempfile.NamedTemporaryFile("r", suffix=".out") as fh:

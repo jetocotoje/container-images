@@ -166,28 +166,17 @@ def select_services(
     changed = set(changed_dirs)
     log(f"Changed top-level dirs: {', '.join(changed) if changed else '(none)'}")
 
-    if not services:
-        return []
-
-    if not changed:
-        log("No changed dirs detected; building all services.")
-        return list(services)
-
     selected = [
         svc
         for svc in services
         if svc["name"] in changed or svc["dir"].split("/", 1)[0] in changed
     ]
 
-    if selected:
-        log(
-            f"Selected {len(selected)} services based on changes: "
-            f"{', '.join(svc['name'] for svc in selected)}"
-        )
-        return selected
-
-    log("No service-specific changes detected; defaulting to all services.")
-    return list(services)
+    log(
+        f"Selected {len(selected)} services based on changes: "
+        f"{', '.join(svc['name'] for svc in selected) or '(none)'}"
+    )
+    return selected
 
 
 def write_output(
