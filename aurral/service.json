@@ -1,0 +1,7 @@
+{
+  "scheduledRebuild": true,
+  "smokeEveryBuild": true,
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "versionArgs": ["AURRAL_VERSION"],
+  "tagTemplates": ["{AURRAL_VERSION}"]
+}
