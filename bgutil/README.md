@@ -9,4 +9,4 @@ Pinned upstream bgutil application and dependencies on a separately pinned Node 
 - Writable temporary storage: `/tmp`; no persistent data is required.
 - Keep the unauthenticated API private. The matching yt-dlp plugin connects using `--extractor-args "youtubepot-bgutilhttp:base_url=http://bgutil:4416"`.
 
-Published tags are `latest` and the upstream bgutil version. Both architectures are published as one index. Renovate tracks the upstream image and Node base independently; weekly rebuilds retain their pins.
+Published tags are `latest` and the upstream bgutil version. Both architectures are published as one index. Renovate groups upstream bgutil and Aurral's bgutil plugin updates in one reviewed PR without automerge. On each upstream update, compare its user, working directory, environment, entrypoint and arguments with this Dockerfile. Node base updates retain the repository's automatic policy; weekly rebuilds retain their pins.

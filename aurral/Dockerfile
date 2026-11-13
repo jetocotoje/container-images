@@ -4,6 +4,7 @@ ARG AURRAL_VERSION=2.13.0@sha256:75dd06805e3daefd49eb4f91d19f4110f0ef6eb1d2b13e4
 
 FROM ghcr.io/lklynet/aurral:${AURRAL_VERSION}
 
+# renovate: datasource=github-releases depName=Brainicism/bgutil-ytdlp-pot-provider
 ARG BGUTIL_PLUGIN_VERSION=2.0.2
 
 ADD --chmod=644 --checksum=sha256:a26b980bf6d8e8400d8f21445daa4d8381bf6183d20f0be309391f86b31e27ef \

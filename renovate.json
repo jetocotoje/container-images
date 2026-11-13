@@ -49,6 +49,15 @@
       "automerge": true,
       "automergeType": "branch",
       "ignoreTests": true
+    },
+    {
+      "matchDepNames": [
+        "brainicism/bgutil-ytdlp-pot-provider",
+        "Brainicism/bgutil-ytdlp-pot-provider@BGUTIL_PLUGIN_VERSION"
+      ],
+      "groupName": "bgutil provider and plugin",
+      "groupSlug": "bgutil-provider-and-plugin",
+      "automerge": false
     }
   ],
 
