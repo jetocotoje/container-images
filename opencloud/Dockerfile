@@ -41,7 +41,7 @@ ARG CALCULATOR_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^bpmn-v(?<version>\d+\.\d+\.\d+)$"
 ARG BPMN_VERSION=1.1.2
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^excalidraw-v(?<version>\d+\.\d+\.\d+)$"
-ARG EXCALIDRAW_VERSION=1.1.0
+ARG EXCALIDRAW_VERSION=1.2.0
 
 ENV OC_EXTENSION_UNZIP=https://github.com/opencloud-eu/web-extensions/releases/download/unzip-v${UNZIP_VERSION}/unzip-${UNZIP_VERSION}.zip \
     OC_EXTENSION_PROGRESS_BARS=https://github.com/opencloud-eu/web-extensions/releases/download/progress-bars-v${PROGRESS_BARS_VERSION}/progress-bars-${PROGRESS_BARS_VERSION}.zip \
