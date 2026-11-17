@@ -35,7 +35,7 @@ ARG EXTERNAL_SITES_VERSION=2.2.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^draw-io-v(?<version>\d+\.\d+\.\d+)$"
 ARG DRAWIO_VERSION=2.2.1
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^pastebin-v(?<version>\d+\.\d+\.\d+)$"
-ARG PASTEBIN_VERSION=2.2.0
+ARG PASTEBIN_VERSION=2.2.1
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^calculator-v(?<version>\d+\.\d+\.\d+)$"
 ARG CALCULATOR_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^bpmn-v(?<version>\d+\.\d+\.\d+)$"
