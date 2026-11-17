@@ -39,7 +39,7 @@ ARG PASTEBIN_VERSION=2.2.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^calculator-v(?<version>\d+\.\d+\.\d+)$"
 ARG CALCULATOR_VERSION=2.1.0
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^bpmn-v(?<version>\d+\.\d+\.\d+)$"
-ARG BPMN_VERSION=1.1.1
+ARG BPMN_VERSION=1.1.2
 # renovate: datasource=github-tags depName=opencloud-eu/web-extensions extractVersion="^excalidraw-v(?<version>\d+\.\d+\.\d+)$"
 ARG EXCALIDRAW_VERSION=1.1.0
 
