@@ -13,9 +13,10 @@
       "ignoreTests": true
     },
     {
-      "description": "Major docker updates automerge through a PR once its build passes",
-      "matchCategories": ["docker"],
+      "description": "Major updates outside GitHub Actions automerge through a PR once its build passes",
+      "matchManagers": ["!github-actions"],
       "matchUpdateTypes": ["major"],
+      "automerge": true,
       "automergeType": "pr",
       "ignoreTests": false,
       "platformAutomerge": false
