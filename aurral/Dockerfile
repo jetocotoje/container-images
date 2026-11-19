@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
-ARG AURRAL_VERSION=2.13.0@sha256:75dd06805e3daefd49eb4f91d19f4110f0ef6eb1d2b13e48ae36120d113b48f0
+ARG AURRAL_VERSION=3.0.0@sha256:41008fa4293dfb12bfa4c4407c22c685110cfb506dfedbadba8148f0bf0a0694
 
 FROM ghcr.io/lklynet/aurral:${AURRAL_VERSION}
 
@@ -13,7 +13,7 @@ ADD --chmod=644 --checksum=sha256:a26b980bf6d8e8400d8f21445daa4d8381bf6183d20f0b
 
 COPY test-plugin.py /tmp/test-plugin.py
 RUN chmod 755 /etc/yt-dlp /etc/yt-dlp/plugins \
-    && gosu 10001:10001 python3 -B /tmp/test-plugin.py "${BGUTIL_PLUGIN_VERSION}" \
+    && env -u LD_PRELOAD setpriv --reuid 10001 --regid 10001 --clear-groups python3 -B /tmp/test-plugin.py "${BGUTIL_PLUGIN_VERSION}" \
     && rm /tmp/test-plugin.py
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
