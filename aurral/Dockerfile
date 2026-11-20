@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
-ARG AURRAL_VERSION=3.0.0@sha256:41008fa4293dfb12bfa4c4407c22c685110cfb506dfedbadba8148f0bf0a0694
+ARG AURRAL_VERSION=3.0.1@sha256:dfca50e61cfdea54506c9836431a3c6b526873e0650f4a348a4a032a1324b7dc
 
 FROM ghcr.io/lklynet/aurral:${AURRAL_VERSION}
 
